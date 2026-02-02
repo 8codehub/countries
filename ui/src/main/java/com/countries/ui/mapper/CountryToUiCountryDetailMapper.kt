@@ -2,7 +2,6 @@ package com.countries.ui.mapper
 
 import com.countries.core.mapper.Mapper
 import com.countries.domain.model.Country
-import com.countries.ui.model.UiCountry
 import com.countries.ui.model.UiCountryDetail
 
 class CountryToUiUiCountryDetailMapper : Mapper<Country, UiCountryDetail> {

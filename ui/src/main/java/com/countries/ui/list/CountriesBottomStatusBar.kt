@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +26,8 @@ fun CountriesBottomStatusBar(
         modifier = modifier.fillMaxWidth()
     ) {
         StatusText(
-            text = statusText(status),
+            text = statusText(status = status),
+            color = setColor(status = status),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 8.dp)
@@ -36,7 +38,8 @@ fun CountriesBottomStatusBar(
 @Composable
 private fun StatusText(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified
 ) {
     Box(
         modifier = modifier,
@@ -44,6 +47,7 @@ private fun StatusText(
     ) {
         Text(
             text = text,
+            color = color,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
         )
@@ -55,5 +59,14 @@ private fun statusText(status: BottomStatus): String {
     return when (status) {
         BottomStatus.Online -> stringResource(ContentR.string.status_online)
         BottomStatus.NoInternet -> stringResource(ContentR.string.status_offline)
+    }
+}
+
+
+@Composable
+private fun setColor(status: BottomStatus): Color {
+    return when (status) {
+        BottomStatus.Online -> Color.Green
+        BottomStatus.NoInternet -> Color.Yellow
     }
 }

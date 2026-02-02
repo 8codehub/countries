@@ -22,8 +22,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -33,10 +33,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.countries.core.R
-import com.countries.content.R as ContentR
 import com.countries.ui.model.UiCountry
 import com.countries.ui.state.CountriesListUiState
+import com.countries.content.R as ContentR
 
 @Composable
 fun CountriesListScreen(

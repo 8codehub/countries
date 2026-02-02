@@ -10,18 +10,18 @@ import com.countries.domain.usecase.RefreshCountriesUseCase
 import com.countries.ui.model.UiCountry
 import com.countries.ui.state.CountriesListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import javax.inject.Inject
 
 @HiltViewModel
 class CountriesListViewModel @Inject constructor(
@@ -78,7 +78,6 @@ class CountriesListViewModel @Inject constructor(
             ) { items, query ->
                 items.filteredBy(query)
             }
-                .flowOn(io)
                 .onStart { setLoading(true) }
                 .collect { items ->
                     updateState {
@@ -102,6 +101,7 @@ class CountriesListViewModel @Inject constructor(
                         updateState { it.copy(bottomStatus = BottomStatus.Online) }
                         refresh()
                     }
+
                     !online -> updateState { it.copy(bottomStatus = BottomStatus.NoInternet) }
                 }
                 wasOnline = online

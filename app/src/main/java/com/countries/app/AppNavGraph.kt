@@ -20,21 +20,21 @@ fun CountriesNavGraph(
 ) {
 
     /***
- * Note:
- * This navigation approach is probably not the best one.
- * It would be better to use a type-safe navigation setup,
- * similar to what I implemented in ChatNote:
- *
- * Main navigation example:
- * https://github.com/8codehub/ChatNote/blob/main/app/src/main/java/com/chatnote/app/MainActivity.kt
- *
- * With that approach, passing arguments directly into the ViewModel becomes much cleaner,
- * like in this example:
- * https://github.com/8codehub/ChatNote/blob/main/feature/direct-notes/directnotes-ui/src/main/java/com/chatnote/directnotesui/DirectNotesViewModel.kt
- *
- * Unfortunately, due to the limited time of this assignment, I didn’t manage to apply
- * the same navigation structure here.
- ***/
+     * Note:
+     * This navigation approach is probably not the best one.
+     * It would be better to use a type-safe navigation setup,
+     * similar to what I implemented in ChatNote:
+     *
+     * Main navigation example:
+     * https://github.com/8codehub/ChatNote/blob/main/app/src/main/java/com/chatnote/app/MainActivity.kt
+     *
+     * With that approach, passing arguments directly into the ViewModel becomes much cleaner,
+     * like in this example:
+     * https://github.com/8codehub/ChatNote/blob/main/feature/direct-notes/directnotes-ui/src/main/java/com/chatnote/directnotesui/DirectNotesViewModel.kt
+     *
+     * Unfortunately, due to the limited time of this assignment, I didn’t manage to apply
+     * the same navigation structure here.
+     ***/
     NavHost(
         navController = navController,
         startDestination = startDestination,

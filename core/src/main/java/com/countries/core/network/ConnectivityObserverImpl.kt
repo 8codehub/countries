@@ -5,12 +5,12 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface ConnectivityObserver {
     val isOnline: Flow<Boolean>
@@ -34,7 +34,10 @@ class ConnectivityObserverImpl @Inject constructor(
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) = trySendOnline()
             override fun onLost(network: Network) = trySendOnline()
-            override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) =
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) =
                 trySendOnline()
         }
 

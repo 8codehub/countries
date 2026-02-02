@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.countries.content.R as ContentR
 import com.countries.ui.state.CountryDetailsUiState
+import com.countries.content.R as ContentR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,7 +1,6 @@
 package com.countries.core.di
 
 import android.content.Context
-import androidx.room.Room
 import com.countries.core.network.ConnectivityObserver
 import com.countries.core.network.ConnectivityObserverImpl
 import dagger.Module

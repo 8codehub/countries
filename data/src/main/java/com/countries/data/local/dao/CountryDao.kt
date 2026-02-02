@@ -23,7 +23,6 @@ interface CountryDao {
     suspend fun countCountries(): Int
 
 
-
     @Query(
         """
         SELECT * FROM countries

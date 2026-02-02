@@ -7,9 +7,9 @@ import com.countries.data.remote.CountriesApi
 import com.countries.data.remote.dto.CountryDto
 import com.countries.domain.model.Country
 import com.countries.domain.repository.CountriesRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 internal class CountriesRepositoryImpl @Inject constructor(
     private val api: CountriesApi,
