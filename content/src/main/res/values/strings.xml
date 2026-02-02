@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="details_title">Details</string>
+    <string name="details_capital">Capital</string>
+    <string name="details_currencies">Currencies</string>
+
+    <string name="details_row_format">%1$s: %2$s</string>
+
+    <string name="placeholder_dash">-</string>
+    <string name="back_symbol">&lt;</string>
+    <string name="status_online">Online</string>
+    <string name="status_offline">Offline</string>
+    <string name="search_countries">Search countries</string>
+    <string name="empty_countries">No countries found</string>
+    <string name="flag_content_description">%1$s flag</string>
+</resources>
