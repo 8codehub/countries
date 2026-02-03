@@ -67,4 +67,9 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":core"))
 
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk.v11310)
+    testImplementation(libs.kotlinx.coroutines.test.v173)
+    testImplementation(libs.turbine.v100)
+
 }
