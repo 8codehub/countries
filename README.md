@@ -60,18 +60,18 @@ The app follows **Clean Architecture + MVVM**, with a modular separation:
 - **domain** → use cases + repository interfaces
 - **ui** → ViewModels + screens + UI models
 - **core** → shared utilities (dispatchers, base ViewModel, mappers)
-- **content** → To store Strings
 
 ---
 
 ## ✅ Modules Overview
 
-| Module   | Responsibility |
-|----------|---------------|
-| `core`   | Base architecture utilities and shared components |
-| `domain` | Business logic, use cases, repository contracts |
-| `data`   | Room database, Retrofit API, repository implementations |
-| `ui`     | Screens, ViewModels, UI state and models |
+| Module    | Responsibility                                          |
+|-----------|---------------------------------------------------------|
+| `core`    | Base architecture utilities and shared components       |
+| `domain`  | Business logic, use cases, repository contracts         |
+| `data`    | Room database, Retrofit API, repository implementations |
+| `ui`      | Screens, ViewModels, UI state and models                |
+| `content` | To store Strings                                        |
 
 ---
 
