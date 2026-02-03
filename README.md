@@ -73,6 +73,21 @@ The app follows **Clean Architecture + MVVM**, with a modular separation:
 | `ui`      | Screens, ViewModels, UI state and models                |
 | `content` | To store Strings                                        |
 
+### ⏳ Note on Feature Modules
+
+In a real production-scale application, the ideal approach would be to structure the project using fully separated **feature-based modules** (e.g. `countries-list`, `country-details`, `search`, etc.).
+
+However, since this project was developed under a strict time limit as part of an interview assignment, the implementation focuses on the required functionality and clean architecture fundamentals rather than introducing additional feature module complexity.
+
+The current modular setup still ensures clear separation between:
+
+- UI layer
+- Domain/business logic
+- Data sources and persistence
+- Shared core utilities
+
+This keeps the codebase maintainable, scalable, and easy to extend further if needed.
+
 ---
 
 ## ✅ Testing
