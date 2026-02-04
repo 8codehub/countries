@@ -34,7 +34,11 @@ fun CountryDetailsScreen(
     viewModel: CountryDetailsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+      
+      /***
+     * Note:
+     * See the CountriesNavGraph comments for context on why the launched effect was used here, even though it’s not the best solution.
+     ***/
     LaunchedEffect(countryId) {
         viewModel.load(countryId)
     }
