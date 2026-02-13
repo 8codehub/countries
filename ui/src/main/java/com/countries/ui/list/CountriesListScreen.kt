@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.countries.ui.model.UiCountry
 import com.countries.ui.state.CountriesListUiState
@@ -42,7 +43,10 @@ fun CountriesListScreen(
     onCountryClick: (UiCountry) -> Unit,
     viewModel: CountriesListViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    /*
+    * collect UI state with lifecycle awareness, use collectAsStateWithLifecycle in CountriesListScreen
+    * */
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     CountriesListLayout(
         state = state,
