@@ -3,8 +3,9 @@ package com.countries.data.mapper
 import com.countries.core.mapper.Mapper
 import com.countries.data.local.entity.CountryEntity
 import com.countries.data.remote.dto.CountryDto
+import javax.inject.Inject
 
-internal class CountryDtoToCountryEntityMapper : Mapper<CountryDto, CountryEntity> {
+internal class CountryDtoToCountryEntityMapper @Inject constructor(): Mapper<CountryDto, CountryEntity> {
     override fun map(from: CountryDto): CountryEntity {
 
         return CountryEntity(
