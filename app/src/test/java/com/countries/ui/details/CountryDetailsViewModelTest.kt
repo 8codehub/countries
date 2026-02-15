@@ -10,7 +10,9 @@ import com.countries.ui.model.UiCountryDetail
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.TestCase.*
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
@@ -96,7 +98,6 @@ class CountryDetailsViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-
 
 
     @Test

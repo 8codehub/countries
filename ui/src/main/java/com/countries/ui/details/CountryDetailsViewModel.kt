@@ -2,13 +2,11 @@ package com.countries.ui.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.countries.core.arch.MVVMViewModel
 import com.countries.core.mapper.Mapper
 import com.countries.domain.model.Country
 import com.countries.domain.usecase.ObserveCountryDetailsUseCase
 import com.countries.ui.model.UiCountryDetail
-import com.countries.ui.navigation.NavigationRoute
 import com.countries.ui.state.CountryDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -26,9 +24,9 @@ class CountryDetailsViewModel @Inject constructor(
     initialState = CountryDetailsUiState()
 ) {
 
-/*
-    private val args = savedStateHandle.toRoute<NavigationRoute.CountryDetails>()
-*/
+    /*
+        private val args = savedStateHandle.toRoute<NavigationRoute.CountryDetails>()
+    */
 
     private val countryId: String? =
         savedStateHandle["id"]
