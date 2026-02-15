@@ -81,8 +81,7 @@ class CountriesListViewModel @Inject constructor(
                     updateState {
                         it.copy(
                             items = items,
-                            isLoading = false,
-                            errorMessage = null
+                            isLoading = false
                         )
                     }
                 }
