@@ -1,23 +1,14 @@
 package com.countries.ui.navigation
 
-import android.net.Uri
+import kotlinx.serialization.Serializable
 
-object Routes {
-    const val CountriesList = "countries_list"
-    const val CountryDetails = "country_details"
-}
+sealed class NavigationRoute {
 
-object NavArgs {
-    const val CountryId = "countryId"
-}
+    @Serializable
+    data object CountriesList : NavigationRoute()
 
-object Destinations {
-
-    const val CountriesListRoute = Routes.CountriesList
-
-    const val CountryDetailsRoute = "${Routes.CountryDetails}/{${NavArgs.CountryId}}"
-
-    fun countryDetails(countryId: String): String {
-        return "${Routes.CountryDetails}/${Uri.encode(countryId)}"
-    }
+    @Serializable
+    data class CountryDetails(
+        val id: String? = null
+    ) : NavigationRoute()
 }

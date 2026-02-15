@@ -1,11 +1,14 @@
 package com.countries.ui.details
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.countries.core.arch.MVVMViewModel
 import com.countries.core.mapper.Mapper
 import com.countries.domain.model.Country
 import com.countries.domain.usecase.ObserveCountryDetailsUseCase
 import com.countries.ui.model.UiCountryDetail
+import com.countries.ui.navigation.NavigationRoute
 import com.countries.ui.state.CountryDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -16,19 +19,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CountryDetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val observeCountryDetails: ObserveCountryDetailsUseCase,
     private val mapper: Mapper<Country, UiCountryDetail>
 ) : MVVMViewModel<CountryDetailsUiState>(
     initialState = CountryDetailsUiState()
 ) {
 
-    private var observeJob: Job? = null
+    private val args = savedStateHandle.toRoute<NavigationRoute.CountryDetails>()
 
-    fun load(countryId: String) {
-        restart(countryId)
+    init {
+        load(countryId = args.id)
     }
 
-    private fun restart(countryId: String) {
+    private var observeJob: Job? = null
+
+    private fun load(countryId: String?) {
+        if (countryId.isNullOrBlank()) {
+            /*Will talk about error cases and single events*/
+            setError("Can’t load country details")
+            return
+        }
         observeJob?.cancel()
         observeJob = viewModelScope.launch {
             observeCountryDetails(id = countryId)
@@ -38,20 +49,17 @@ class CountryDetailsViewModel @Inject constructor(
         }
     }
 
+
     private fun onCountry(country: Country?) {
+        setLoading(false)
         if (country == null) {
-            setLoading(false)
-            clearError()
+            setError("Can’t load country details")
             return
         }
-
+        clearError()
         val ui = mapper.map(country)
         updateState {
-            it.copy(
-                isLoading = false,
-                errorMessage = null,
-                uiCountryDetail = ui
-            )
+            it.copy(uiCountryDetail = ui)
         }
     }
 

@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlinAndroidKsp) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.android.library) apply false
-    id("com.google.firebase.crashlytics") version "3.0.3" apply false
 }
 buildscript {
     repositories {

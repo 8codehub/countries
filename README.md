@@ -14,12 +14,14 @@ A simple Android application that consumes the **Rest Countries API** and provid
 ## ✅ Features
 
 ### 🌍 Countries List Screen
+
 - Displays a scrollable list of countries
 - Shows:
     - Country flag
     - Country name
 
 ### 📌 Country Details Screen
+
 - Displays detailed information including:
     - Flag
     - Name
@@ -27,13 +29,16 @@ A simple Android application that consumes the **Rest Countries API** and provid
     - Currencies
 
 ### 🔍 Search
+
 - Users can search countries by name
 - Filtering is performed locally on the already loaded list
 
 ### 🌐 Internationalization Ready
+
 - The project structure makes it easy to add translations using Android string resources
 
 ### 💾 Offline Support
+
 - Countries are cached locally after the first successful fetch
 - Stored using Room persistence
 
@@ -46,6 +51,7 @@ A simple Android application that consumes the **Rest Countries API** and provid
 - UI always observes database updates through Flow
 
 ### Flags Note
+
 There is **no special logic** to download and persist flag images as files.
 
 Flags are displayed directly using the provided URL, relying on the image loading library cache.
@@ -75,9 +81,13 @@ The app follows **Clean Architecture + MVVM**, with a modular separation:
 
 ### ⏳ Note on Feature Modules
 
-In a real production-scale application, the ideal approach would be to structure the project using fully separated **feature-based modules** (e.g. `countries-list`, `country-details`, `search`, etc.).
+In a real production-scale application, the ideal approach would be to structure the project using
+fully separated **feature-based modules** (e.g. `countries-list`, `country-details`, `search`,
+etc.).
 
-However, since this project was developed under a strict time limit as part of an interview assignment, the implementation focuses on the required functionality and clean architecture fundamentals rather than introducing additional feature module complexity.
+However, since this project was developed under a strict time limit as part of an interview
+assignment, the implementation focuses on the required functionality and clean architecture
+fundamentals rather than introducing additional feature module complexity.
 
 The current modular setup still ensures clear separation between:
 
@@ -95,6 +105,7 @@ This keeps the codebase maintainable, scalable, and easy to extend further if ne
 Unit tests were written for the most important layers:
 
 ### ViewModel Tests
+
 - `CountriesListViewModelTest`
     - Query updates
     - Retry logic
@@ -108,6 +119,7 @@ Unit tests were written for the most important layers:
     - Restart logic
 
 ### Use Case Tests
+
 - `ObserveCountriesListUseCaseTest`
 - `ObserveCountryDetailsUseCaseTest`
 
