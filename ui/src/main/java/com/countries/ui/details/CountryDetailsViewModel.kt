@@ -26,10 +26,16 @@ class CountryDetailsViewModel @Inject constructor(
     initialState = CountryDetailsUiState()
 ) {
 
+/*
     private val args = savedStateHandle.toRoute<NavigationRoute.CountryDetails>()
+*/
+
+    private val countryId: String? =
+        savedStateHandle["id"]
+
 
     init {
-        load(countryId = args.id)
+        load(countryId = countryId)
     }
 
     private var observeJob: Job? = null
@@ -52,11 +58,11 @@ class CountryDetailsViewModel @Inject constructor(
 
     private fun onCountry(country: Country?) {
         setLoading(false)
+        clearError()
         if (country == null) {
             setError("Can’t load country details")
             return
         }
-        clearError()
         val ui = mapper.map(country)
         updateState {
             it.copy(uiCountryDetail = ui)

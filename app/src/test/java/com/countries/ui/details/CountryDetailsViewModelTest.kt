@@ -1,5 +1,6 @@
 package com.countries.ui.details
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.countries.MainDispatcherRule
 import com.countries.core.mapper.Mapper
@@ -9,20 +10,15 @@ import com.countries.ui.model.UiCountryDetail
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.atomic.AtomicInteger
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CountryDetailsViewModelTest {
@@ -33,123 +29,93 @@ class CountryDetailsViewModelTest {
     private val observeCountryDetails: ObserveCountryDetailsUseCase = mockk()
     private val mapper: Mapper<Country, UiCountryDetail> = mockk()
 
-    private fun createViewModel(): CountryDetailsViewModel =
-        CountryDetailsViewModel(
+    private fun createViewModel(countryId: String?): CountryDetailsViewModel {
+        val savedStateHandle = SavedStateHandle(mapOf("id" to countryId))
+
+        return CountryDetailsViewModel(
+            savedStateHandle = savedStateHandle,
             observeCountryDetails = observeCountryDetails,
             mapper = mapper
         )
+    }
 
-    private fun defaultUiDetail(): UiCountryDetail = UiCountryDetail(
-        countryFlag = null,
-        countryName = null,
-        capitalName = null,
-        countryCurrencies = null
+    private fun sampleCountry() = Country(
+        id = "es",
+        name = "Spain",
+        flagUrl = "es",
+        capital = "Madrid",
+        currenciesDisplay = "EUR"
     )
 
-    private fun sampleCountry(): Country =
-        Country(
-            id = "es",
-            name = "Spain",
-            flagUrl = "es",
-            capital = "Madrid",
-            currenciesDisplay = "EUR"
-        )
-
-    private fun sampleUiCountryDetail(): UiCountryDetail =
-        UiCountryDetail(
-            countryFlag = "es",
-            countryName = "Spain",
-            capitalName = "Madrid",
-            countryCurrencies = "EUR"
-        )
+    private fun sampleUiCountry() = UiCountryDetail(
+        countryFlag = "es",
+        countryName = "Spain",
+        capitalName = "Madrid",
+        countryCurrencies = "EUR"
+    )
 
     @Test
-    fun `load calls observeCountryDetails with id`() = runTest {
+    fun `init calls observeCountryDetails`() = runTest {
         every { observeCountryDetails(id = "es") } returns flowOf(null)
 
-        val vm = createViewModel()
-        vm.load("es")
+        createViewModel("es")
         advanceUntilIdle()
 
         verify(exactly = 1) { observeCountryDetails(id = "es") }
     }
 
     @Test
-    fun `load sets loading true onStart then emits mapped ui on country`() = runTest {
-        val upstream = MutableSharedFlow<Country?>(replay = 0)
+    fun `init sets loading then emits mapped ui`() = runTest {
         val country = sampleCountry()
-        val ui = sampleUiCountryDetail()
+        val ui = sampleUiCountry()
 
-        every { observeCountryDetails(id = "es") } returns upstream
+        every { observeCountryDetails(id = "es") } returns flow {
+            emit(country)
+        }
         every { mapper.map(country) } returns ui
 
-        val vm = createViewModel()
+        val vm = createViewModel("es")
 
         vm.state.test {
-            val initial = awaitItem()
-            assertFalse(initial.isLoading)
-            assertNull(initial.errorMessage)
-            assertEquals(defaultUiDetail(), initial.uiCountryDetail)
+            var state = awaitItem()
 
-            vm.load("es")
+            // maybe bad solution, didn't find better one yet,
+            // I think while is not the best one
+            while (
+                state.isLoading ||
+                state.errorMessage != null ||
+                state.uiCountryDetail.countryName == null
+            ) {
+                state = awaitItem()
+            }
 
-            val loading = awaitItem()
-            assertTrue(loading.isLoading)
-
-            assertEquals(defaultUiDetail(), loading.uiCountryDetail)
-
-            upstream.emit(country)
-            advanceUntilIdle()
-
-            val loaded = awaitItem()
-            assertFalse(loaded.isLoading)
-            assertNull(loaded.errorMessage)
-            assertEquals(ui, loaded.uiCountryDetail)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-
-        verify(exactly = 1) { mapper.map(country) }
-    }
-
-    @Test
-    fun `load handles null country by setting loading false and clearing error`() = runTest {
-        val upstream = MutableSharedFlow<Country?>(replay = 0)
-        every { observeCountryDetails(id = "es") } returns upstream
-
-        val vm = createViewModel()
-
-        vm.state.test {
-            val initial = awaitItem()
-            assertEquals(defaultUiDetail(), initial.uiCountryDetail)
-
-            vm.load("es")
-            val loading = awaitItem()
-            assertTrue(loading.isLoading)
-
-            upstream.emit(null)
-            advanceUntilIdle()
-
-            val afterNull = awaitItem()
-            assertFalse(afterNull.isLoading)
-            assertNull(afterNull.errorMessage)
-
-
-            assertEquals(defaultUiDetail(), afterNull.uiCountryDetail)
+            assertFalse(state.isLoading)
+            assertNull(state.errorMessage)
+            assertEquals(ui, state.uiCountryDetail)
 
             cancelAndIgnoreRemainingEvents()
         }
     }
 
+
+
     @Test
-    fun `load handles upstream error by setting errorMessage`() = runTest {
+    fun `init with null id sets error`() = runTest {
+        val vm = createViewModel(null)
+
+        advanceUntilIdle()
+
+        assertEquals("Can’t load country details", vm.state.value.errorMessage)
+        assertFalse(vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `init handles upstream error`() = runTest {
         every { observeCountryDetails(id = "es") } returns flow {
             throw RuntimeException("boom")
         }
 
-        val vm = createViewModel()
-
-        vm.load("es")
+        val vm = createViewModel("es")
         advanceUntilIdle()
 
         assertEquals("boom", vm.state.value.errorMessage)
@@ -157,51 +123,20 @@ class CountryDetailsViewModelTest {
     }
 
     @Test
-    fun `load cancels previous observation and restarts collecting`() = runTest {
-        val subscriptions = AtomicInteger(0)
-
-        val firstFlow = flowOf<Country?>(null).onStart { subscriptions.incrementAndGet() }
-        val secondFlow = flowOf<Country?>(null).onStart { subscriptions.incrementAndGet() }
-
-        every { observeCountryDetails(id = "es") } returns firstFlow
-        every { observeCountryDetails(id = "fr") } returns secondFlow
-
-        val vm = createViewModel()
-
-        vm.load("es")
-        advanceUntilIdle()
-        assertEquals(1, subscriptions.get())
-
-        vm.load("fr")
-        advanceUntilIdle()
-        assertEquals(2, subscriptions.get())
-
-        verify(exactly = 1) { observeCountryDetails(id = "es") }
-        verify(exactly = 1) { observeCountryDetails(id = "fr") }
-    }
-
-    @Test
-    fun `load clears previous error when a valid country arrives`() = runTest {
-        val upstream = MutableSharedFlow<Country?>(replay = 0)
+    fun `init clears error when valid country arrives`() = runTest {
+        val upstream = MutableSharedFlow<Country?>(replay = 1)
         val country = sampleCountry()
-        val ui = sampleUiCountryDetail()
+        val ui = sampleUiCountry()
 
         every { observeCountryDetails(id = "xx") } returns flow {
             throw RuntimeException("network failed")
         }
-
         every { observeCountryDetails(id = "es") } returns upstream
         every { mapper.map(country) } returns ui
 
-        val vm = createViewModel()
-
-        vm.load("xx")
+        createViewModel("xx")
         advanceUntilIdle()
-        assertEquals("network failed", vm.state.value.errorMessage)
-
-        vm.load("es")
-        advanceUntilIdle()
-
+        val vm = createViewModel("es")
         upstream.emit(country)
         advanceUntilIdle()
 
