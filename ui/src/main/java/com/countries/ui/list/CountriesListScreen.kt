@@ -19,10 +19,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,35 +32,49 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.countries.ui.model.UiCountry
+import com.countries.ui.navigation.NavigationRoute
 import com.countries.ui.state.CountriesListUiState
 import com.countries.content.R as ContentR
 
 @Composable
 fun CountriesListScreen(
-    onCountryClick: (UiCountry) -> Unit,
+    navigateTo: (NavigationRoute) -> Unit,
     viewModel: CountriesListViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    /*
+    * collect UI state with lifecycle awareness, use collectAsStateWithLifecycle in CountriesListScreen
+    * */
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    CountriesListLayout(
-        state = state,
-        onCountryClick = onCountryClick,
-        onQueryChange = viewModel::onQueryChanged
-    )
+    Scaffold {
+        CountriesListLayout(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize(),
+            state = state,
+            navigateTo = navigateTo,
+            onQueryChange = viewModel::onQueryChanged
+        )
+    }
+
 }
 
 @Composable
 private fun CountriesListLayout(
+    modifier: Modifier,
     state: CountriesListUiState,
-    onCountryClick: (UiCountry) -> Unit,
+    navigateTo: (NavigationRoute) -> Unit,
     onQueryChange: (String) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier) {
         CountriesListContent(
             state = state,
-            onCountryClick = onCountryClick,
+            onCountryClick = {
+                navigateTo(NavigationRoute.CountryDetails(it.id))
+            },
             onQueryChange = onQueryChange,
             modifier = Modifier.weight(1f)
         )

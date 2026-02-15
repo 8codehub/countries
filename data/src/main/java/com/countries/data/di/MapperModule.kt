@@ -7,28 +7,31 @@ import com.countries.data.mapper.CountryEntityToCountryMapper
 import com.countries.data.mapper.CountryToCountryEntityMapper
 import com.countries.data.remote.dto.CountryDto
 import com.countries.domain.model.Country
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object MapperModule {
-    @Provides
-    @Singleton
-    fun provideCountryDtoToCountryEntityMapper(): Mapper<CountryDto, CountryEntity> =
-        CountryDtoToCountryEntityMapper()
+internal abstract class MapperModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideCountryEntityToCountryMapper(): Mapper<CountryEntity, Country> =
-        CountryEntityToCountryMapper()
+    abstract fun bindCountryDtoToCountryEntityMapper(
+        impl: CountryDtoToCountryEntityMapper
+    ): Mapper<CountryDto, CountryEntity>
 
-
-    @Provides
+    @Binds
     @Singleton
-    fun provideCountryToCountryEntityMapper(): Mapper<Country, CountryEntity> =
-        CountryToCountryEntityMapper()
+    abstract fun bindCountryEntityToCountryMapper(
+        impl: CountryEntityToCountryMapper
+    ): Mapper<CountryEntity, Country>
+
+    @Binds
+    @Singleton
+    abstract fun bindCountryToCountryEntityMapper(
+        impl: CountryToCountryEntityMapper
+    ): Mapper<Country, CountryEntity>
 }

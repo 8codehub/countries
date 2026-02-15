@@ -1,5 +1,6 @@
 package com.countries.ui.details
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.countries.core.arch.MVVMViewModel
 import com.countries.core.mapper.Mapper
@@ -16,19 +17,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CountryDetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val observeCountryDetails: ObserveCountryDetailsUseCase,
     private val mapper: Mapper<Country, UiCountryDetail>
 ) : MVVMViewModel<CountryDetailsUiState>(
     initialState = CountryDetailsUiState()
 ) {
 
-    private var observeJob: Job? = null
+    /*
+        private val args = savedStateHandle.toRoute<NavigationRoute.CountryDetails>()
+    */
 
-    fun load(countryId: String) {
-        restart(countryId)
+    private val countryId: String? =
+        savedStateHandle["id"]
+
+
+    init {
+        load(countryId = countryId)
     }
 
-    private fun restart(countryId: String) {
+    private var observeJob: Job? = null
+
+    private fun load(countryId: String?) {
+        if (countryId.isNullOrBlank()) {
+            /*Will talk about error cases and single events*/
+            setError("Can’t load country details")
+            return
+        }
         observeJob?.cancel()
         observeJob = viewModelScope.launch {
             observeCountryDetails(id = countryId)
@@ -38,20 +53,17 @@ class CountryDetailsViewModel @Inject constructor(
         }
     }
 
+
     private fun onCountry(country: Country?) {
+        setLoading(false)
+        clearError()
         if (country == null) {
-            setLoading(false)
-            clearError()
+            setError("Can’t load country details")
             return
         }
-
         val ui = mapper.map(country)
         updateState {
-            it.copy(
-                isLoading = false,
-                errorMessage = null,
-                uiCountryDetail = ui
-            )
+            it.copy(uiCountryDetail = ui)
         }
     }
 

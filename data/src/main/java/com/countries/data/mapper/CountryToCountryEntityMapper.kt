@@ -3,8 +3,9 @@ package com.countries.data.mapper
 import com.countries.core.mapper.Mapper
 import com.countries.data.local.entity.CountryEntity
 import com.countries.domain.model.Country
+import javax.inject.Inject
 
-class CountryToCountryEntityMapper : Mapper<Country, CountryEntity> {
+class CountryToCountryEntityMapper @Inject constructor() : Mapper<Country, CountryEntity> {
     override fun map(from: Country) = CountryEntity(
         cca3 = from.id,
         name = from.name,
