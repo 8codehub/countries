@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import com.countries.core.extension.isCurrentlyOnline
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -18,27 +19,27 @@ interface ConnectivityObserver {
 
 @Singleton
 class ConnectivityObserverImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ConnectivityObserver {
 
     private val connectivityManager: ConnectivityManager
         get() = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     override val isOnline: Flow<Boolean> = callbackFlow {
-        fun trySendOnline() {
-            trySend(connectivityManager.isCurrentlyOnline())
+        fun trySendStatus(available: Boolean) {
+            trySend(available)
         }
 
-        trySendOnline()
+        trySendStatus(connectivityManager.isCurrentlyOnline())
 
         val callback = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) = trySendOnline()
-            override fun onLost(network: Network) = trySendOnline()
+            override fun onAvailable(network: Network) = trySendStatus(true)
+            override fun onLost(network: Network) = trySendStatus(false)
             override fun onCapabilitiesChanged(
                 network: Network,
                 networkCapabilities: NetworkCapabilities
             ) =
-                trySendOnline()
+                trySendStatus(connectivityManager.isCurrentlyOnline())
         }
 
         runCatching { connectivityManager.registerDefaultNetworkCallback(callback) }
@@ -48,11 +49,4 @@ class ConnectivityObserverImpl @Inject constructor(
             runCatching { connectivityManager.unregisterNetworkCallback(callback) }
         }
     }.distinctUntilChanged()
-}
-
-private fun ConnectivityManager.isCurrentlyOnline(): Boolean {
-    val active = activeNetwork ?: return false
-    val caps = getNetworkCapabilities(active) ?: return false
-    return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 }

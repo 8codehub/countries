@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -94,7 +93,7 @@ class CountriesListViewModel @Inject constructor(
         launchOn(io) {
             var wasOnline: Boolean? = null
 
-            connectivity.isOnline.collectLatest { online ->
+            connectivity.isOnline.collect { online ->
                 when {
                     online && wasOnline == false -> {
                         updateState { it.copy(bottomStatus = BottomStatus.Online) }
